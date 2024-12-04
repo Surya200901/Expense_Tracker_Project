@@ -1,12 +1,13 @@
 package com.expensetracker.service;
 
-import com.expensetracker.dto.AuthRequest;
-import com.expensetracker.dto.AuthResponse;
-import com.expensetracker.entity.User;
-import com.expensetracker.repository.UserRepository;
-import com.expensetracker.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.expensetracker.dto.AuthRequest;
+import com.expensetracker.dto.AuthResponse;
+import com.expensetracker.entity.AppUser;
+import com.expensetracker.repository.UserRepository;
+import com.expensetracker.security.JwtService;
+
 
 @Service
 public class AuthService {
@@ -22,7 +23,7 @@ public class AuthService {
     }
 
     public AuthResponse register(AuthRequest authRequest) {
-        User user = new User();
+        AppUser user = new AppUser();
         user.setUsername(authRequest.getUsername());
         user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
         user.setEmail(authRequest.getUsername() + "@example.com"); // Temporary email logic
@@ -31,7 +32,7 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthRequest authRequest) {
-        User user = userRepository.findByUsername(authRequest.getUsername())
+        AppUser user = userRepository.findByUsername(authRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         if (passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             return new AuthResponse(jwtService.generateToken(authRequest.getUsername()));
