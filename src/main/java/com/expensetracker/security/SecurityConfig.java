@@ -23,7 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/", "/public/**", "login.html", "/register.html", "/index.html").permitAll() // Add publicly accessible endpoints here
+                .requestMatchers("/auth/**", "/", "/public/**", "/login.html", "/register.html", "/index.html", "/api/register","/static/**", "/auth/login", "/auth/register").permitAll() // Add publicly accessible endpoints here
                 .anyRequest().authenticated() // All other endpoints require authentication
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -3,12 +3,11 @@ package com.expensetracker.dto;
 public class AuthResponse {
     private String token;
 
-    // Constructor
     public AuthResponse(String token) {
         this.token = token;
     }
 
-    // Getter and Setter
+    // Getter and setter
     public String getToken() {
         return token;
     }

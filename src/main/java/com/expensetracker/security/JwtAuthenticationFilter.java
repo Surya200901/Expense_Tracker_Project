@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -27,6 +26,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        // Skip JWT authentication for login endpoint
+        if (request.getRequestURI().startsWith("/auth/login")) {
+            filterChain.doFilter(request, response);
+            return; // Skip JWT processing for login request
+        }
+
         String authHeader = request.getHeader("Authorization");
         String jwt = null;
         String username = null;
@@ -39,10 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (username.equals(userDetails.getUsername())) {
+            // Validate token
+            if (jwtService.isTokenValid(jwt, userDetails)) {
                 var authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

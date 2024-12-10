@@ -4,16 +4,7 @@ public class AuthRequest {
     private String username;
     private String password;
 
-    // Default constructor
-    public AuthRequest() {}
-
-    // Parameterized constructor
-    public AuthRequest(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    // Getters and Setters
+    // Getters and setters
     public String getUsername() {
         return username;
     }
